@@ -25,14 +25,20 @@ Build and deploy with:
 
 ```bash
 npm install
-npm run build:cf
+npm run build
 npm run deploy:cf
 ```
 
 If deploying from Cloudflare Pages with a custom command, use:
 
 ```bash
-npm run build:cf
+npm run build
+```
+
+If you want a plain Next.js local production build (without OpenNext), use:
+
+```bash
+npm run build:next
 ```
 
 ---

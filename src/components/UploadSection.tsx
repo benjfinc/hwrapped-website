@@ -70,7 +70,7 @@ export function UploadSection({ onFileUpload, onFilesUpload, onUseMock, loading,
           className={`
             relative border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer
             transition-all duration-200
-            ${loading ? 'border-gray-600 cursor-not-allowed opacity-70' : 'border-gray-600 hover:border-hinge-accent/50 hover:bg-hinge-card/50'}
+            ${loading ? 'border-gray-300 cursor-not-allowed opacity-70' : 'border-gray-300 hover:border-hinge-accent/50 hover:bg-hinge-card'}
           `}
         >
           <input
@@ -85,7 +85,7 @@ export function UploadSection({ onFileUpload, onFilesUpload, onUseMock, loading,
           {loading ? (
             <div className="flex flex-col items-center gap-4">
               <div className="w-12 h-12 border-2 border-hinge-accent border-t-transparent rounded-full animate-spin" />
-              <p className="text-gray-400">Processing your data...</p>
+              <p className="text-gray-500">Processing your data...</p>
             </div>
           ) : (
             <>
@@ -105,7 +105,7 @@ export function UploadSection({ onFileUpload, onFilesUpload, onUseMock, loading,
                 </svg>
               </div>
               <h3 className="text-xl font-semibold mb-2">Drop your Hinge data here</h3>
-              <p className="text-gray-400 mb-4">
+              <p className="text-gray-500 mb-4">
                 or click to browse • ZIP (full export) or multiple JSON files
               </p>
               <p className="text-sm text-gray-500">
@@ -129,7 +129,7 @@ export function UploadSection({ onFileUpload, onFilesUpload, onUseMock, loading,
           <button
             onClick={onUseMock}
             disabled={loading}
-            className="text-gray-500 hover:text-gray-300 text-sm underline underline-offset-2 transition-colors"
+            className="text-gray-500 hover:text-gray-700 text-sm underline underline-offset-2 transition-colors"
           >
             Try with demo data instead
           </button>

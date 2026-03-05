@@ -22,24 +22,25 @@ export function BarChartSlide({ data, color = '#994EA8' }: BarChartSlideProps) {
         <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
           <XAxis
             dataKey="name"
-            stroke="#666"
-            tick={{ fill: '#999', fontSize: 12 }}
+            stroke="#6B7280"
+            tick={{ fill: '#4B5563', fontSize: 12 }}
             axisLine={false}
             tickLine={false}
           />
           <YAxis
-            stroke="#666"
-            tick={{ fill: '#999', fontSize: 12 }}
+            stroke="#6B7280"
+            tick={{ fill: '#4B5563', fontSize: 12 }}
             axisLine={false}
             tickLine={false}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: '#1a1a1a',
-              border: '1px solid #333',
+              backgroundColor: '#fff',
+              border: '1px solid #E5E7EB',
               borderRadius: '8px',
+              color: '#1F2937',
             }}
-            labelStyle={{ color: '#fff' }}
+            labelStyle={{ color: '#1F2937' }}
           />
           <Bar
             dataKey="value"

@@ -5,8 +5,9 @@
 :root {
   --hinge-accent: #994EA8;
   --hinge-accent-light: #B87AC4;
-  --hinge-dark: #1A1A1A;
-  --hinge-card: #242424;
+  --hinge-bg: #FAF9F8;
+  --hinge-card: #F5F3F0;
+  --hinge-surface: #EDEAE6;
   --gradient-start: #994EA8;
   --gradient-end: #6B2D7A;
 }
@@ -20,8 +21,8 @@ html {
 }
 
 body {
-  background: var(--hinge-dark);
-  color: white;
+  background: var(--hinge-bg);
+  color: #1A1A1A;
   min-height: 100vh;
 }
 
@@ -31,16 +32,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: #EDEAE6;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: #C4BDB5;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #A89F95;
 }
 
 /* Selection */

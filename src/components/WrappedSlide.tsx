@@ -91,7 +91,7 @@ export function WrappedSlide({
           </motion.div>
 
           <motion.p
-            className="text-xl text-gray-400 mb-8"
+            className="text-xl text-gray-600 mb-8"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -110,7 +110,7 @@ export function WrappedSlide({
             {onReset && (
               <button
                 onClick={onReset}
-                className="px-8 py-4 border border-gray-600 hover:border-gray-500 text-gray-300 font-medium rounded-full transition-all"
+                className="px-8 py-4 border border-gray-300 hover:border-gray-400 text-gray-700 font-medium rounded-full transition-all"
               >
                 Try different data
               </button>
@@ -166,7 +166,7 @@ export function WrappedSlide({
 
         {slide.subtitle && (
           <motion.p
-            className="text-xl text-gray-400 mb-8"
+            className="text-xl text-gray-600 mb-8"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -181,7 +181,7 @@ export function WrappedSlide({
 
       {onExport && (
         <motion.button
-          className="absolute bottom-8 right-6 px-4 py-2 text-sm text-gray-400 hover:text-hinge-accent transition-colors"
+          className="absolute bottom-8 right-6 px-4 py-2 text-sm text-gray-500 hover:text-hinge-accent transition-colors"
           onClick={() => slideRef.current && onExport(slideRef.current)}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

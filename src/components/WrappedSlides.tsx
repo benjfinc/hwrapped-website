@@ -7,7 +7,7 @@ import type { SlideData, HingeStats } from '@/lib/types'
 async function exportSlide(element: HTMLElement): Promise<void> {
   const html2canvas = (await import('html2canvas')).default
   const canvas = await html2canvas(element, {
-    backgroundColor: '#0a0a0a',
+    backgroundColor: '#FAF9F8',
     scale: 2,
     useCORS: true,
   })
@@ -32,11 +32,11 @@ export function WrappedSlides({ slides, stats, onReset, useMock }: WrappedSlides
   return (
     <div className="relative">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-hinge-dark/80 backdrop-blur-md border-b border-white/5">
-        <span className="text-lg font-semibold">Hinge Wrapped</span>
+      <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-4 bg-hinge-bg/90 backdrop-blur-md border-b border-gray-200">
+        <span className="text-lg font-semibold text-gray-900">Hinge Wrapped</span>
         <button
           onClick={onReset}
-          className="text-sm text-gray-400 hover:text-white transition-colors"
+          className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
         >
           Start over
         </button>

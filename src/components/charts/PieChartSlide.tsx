@@ -8,7 +8,7 @@ interface PieChartSlideProps {
   colors?: string[]
 }
 
-const DEFAULT_COLORS = ['#994EA8', '#B87AC4', '#555', '#777']
+const DEFAULT_COLORS = ['#994EA8', '#B87AC4', '#9CA3AF', '#6B7280']
 
 export function PieChartSlide({ data, colors = DEFAULT_COLORS }: PieChartSlideProps) {
   if (!data || data.length === 0) return null
@@ -40,9 +40,10 @@ export function PieChartSlide({ data, colors = DEFAULT_COLORS }: PieChartSlidePr
           </Pie>
           <Tooltip
             contentStyle={{
-              backgroundColor: '#1a1a1a',
-              border: '1px solid #333',
+              backgroundColor: '#fff',
+              border: '1px solid #E5E7EB',
               borderRadius: '8px',
+              color: '#1F2937',
             }}
           />
           <Legend />

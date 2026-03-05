@@ -72,7 +72,7 @@ export default function Home() {
   const showWrapped = slides.length > 0
 
   return (
-    <main className="min-h-screen bg-hinge-dark">
+    <main className="min-h-screen bg-hinge-bg">
       <AnimatePresence mode="wait">
         {!showWrapped ? (
           <motion.div

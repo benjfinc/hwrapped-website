@@ -11,8 +11,9 @@ const config: Config = {
       colors: {
         'hinge-accent': '#994EA8',
         'hinge-accent-light': '#B87AC4',
-        'hinge-dark': '#1A1A1A',
-        'hinge-card': '#242424',
+        'hinge-bg': '#FAF9F8',
+        'hinge-card': '#F5F3F0',
+        'hinge-surface': '#EDEAE6',
         'hinge-warm': '#E8A4B8',
       },
       fontFamily: {

@@ -27,7 +27,7 @@ const steps = [
 
 export function HowToSection() {
   return (
-    <section className="py-24 px-6 bg-hinge-card/30">
+    <section className="py-24 px-6 bg-hinge-surface">
       <motion.div
         className="max-w-3xl mx-auto"
         initial={{ opacity: 0 }}
@@ -54,7 +54,7 @@ export function HowToSection() {
               </div>
               <div>
                 <h3 className="font-semibold text-lg mb-1">{step.title}</h3>
-                <p className="text-gray-400">{step.desc}</p>
+                <p className="text-gray-600">{step.desc}</p>
               </div>
             </motion.div>
           ))}

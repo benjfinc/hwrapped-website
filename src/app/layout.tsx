@@ -15,6 +15,16 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: 'Hinge Wrapped | Your Year in Dating',
   description: 'Upload your Hinge data export and see insights about your dating life. Your year in dating.',
+  openGraph: {
+    title: 'Hinge Wrapped | Your Year in Dating',
+    description: 'Upload your Hinge data export and see insights about your dating life.',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Hinge Wrapped | Your Year in Dating',
+    description: 'Upload your Hinge data export and see insights about your dating life.',
+  },
 }
 
 export default function RootLayout({

@@ -39,6 +39,12 @@ npm run build
 npm start
 ```
 
+## Deploy to Vercel
+
+1. Push to GitHub and go to [vercel.com](https://vercel.com)
+2. Import your repo — Vercel auto-detects Next.js
+3. Deploy. See [DEPLOYMENT.md](./DEPLOYMENT.md) for full guide including custom domain setup.
+
 ## Hinge Data Format
 
 Hinge exports come as a ZIP file containing JSON files. The parser looks for:

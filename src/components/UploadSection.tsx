@@ -6,12 +6,11 @@ import { motion } from 'framer-motion'
 interface UploadSectionProps {
   onFileUpload: (file: File) => Promise<void>
   onFilesUpload?: (files: File[]) => Promise<void>
-  onUseMock: () => void
   loading: boolean
   error: string | null
 }
 
-export function UploadSection({ onFileUpload, onFilesUpload, onUseMock, loading, error }: UploadSectionProps) {
+export function UploadSection({ onFileUpload, onFilesUpload, loading, error }: UploadSectionProps) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const processFiles = useCallback(
@@ -119,21 +118,11 @@ export function UploadSection({ onFileUpload, onFilesUpload, onUseMock, loading,
           <motion.p
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mt-4 text-red-400 text-center"
+            className="mt-4 text-red-500 text-center"
           >
             {error}
           </motion.p>
         )}
-
-        <div className="mt-6 text-center">
-          <button
-            onClick={onUseMock}
-            disabled={loading}
-            className="text-gray-500 hover:text-gray-700 text-sm underline underline-offset-2 transition-colors"
-          >
-            Try with demo data instead
-          </button>
-        </div>
       </motion.div>
     </section>
   )

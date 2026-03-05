@@ -11,7 +11,6 @@ import { parseHingeFile, mergeParsedData } from '@/lib/data-parser'
 import { computeStats } from '@/lib/compute-stats'
 import { generateSlides } from '@/lib/generate-slides'
 import type { ParsedHingeData, HingeStats, SlideData } from '@/lib/types'
-import { MOCK_HINGE_DATA } from '@/lib/mock-data'
 
 export default function Home() {
   const [data, setData] = useState<ParsedHingeData | null>(null)
@@ -19,7 +18,6 @@ export default function Home() {
   const [slides, setSlides] = useState<SlideData[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [useMock, setUseMock] = useState(false)
 
   const processData = (parsed: ParsedHingeData) => {
     const computed = computeStats(parsed)
@@ -56,17 +54,11 @@ export default function Home() {
     }
   }
 
-  const handleUseMock = () => {
-    setUseMock(true)
-    processData(MOCK_HINGE_DATA)
-  }
-
   const handleReset = () => {
     setData(null)
     setStats(null)
     setSlides([])
     setError(null)
-    setUseMock(false)
   }
 
   const showWrapped = slides.length > 0
@@ -86,7 +78,6 @@ export default function Home() {
             <UploadSection
               onFileUpload={handleFileUpload}
               onFilesUpload={handleFilesUpload}
-              onUseMock={handleUseMock}
               loading={loading}
               error={error}
             />
@@ -104,7 +95,6 @@ export default function Home() {
               slides={slides}
               stats={stats!}
               onReset={handleReset}
-              useMock={useMock}
             />
           </motion.div>
         )}

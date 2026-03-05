@@ -21,10 +21,9 @@ interface WrappedSlidesProps {
   slides: SlideData[]
   stats: HingeStats
   onReset: () => void
-  useMock?: boolean
 }
 
-export function WrappedSlides({ slides, stats, onReset, useMock }: WrappedSlidesProps) {
+export function WrappedSlides({ slides, stats, onReset }: WrappedSlidesProps) {
   const handleExport = useCallback(async (element: HTMLElement) => {
     await exportSlide(element)
   }, [])
@@ -52,7 +51,6 @@ export function WrappedSlides({ slides, stats, onReset, useMock }: WrappedSlides
             total={slides.length}
             onExport={handleExport}
             onReset={onReset}
-            useMock={useMock}
             isShareSlide={slide.id === 'share'}
           />
         ))}

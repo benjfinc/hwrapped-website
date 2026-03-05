@@ -10,7 +10,7 @@ import type { SlideData } from '@/lib/types'
 async function exportSlide(element: HTMLElement): Promise<void> {
   const html2canvas = (await import('html2canvas')).default
   const canvas = await html2canvas(element, {
-    backgroundColor: '#0a0a0a',
+    backgroundColor: '#FAF9F8',
     scale: 2,
     useCORS: true,
   })
@@ -26,7 +26,6 @@ interface WrappedSlideProps {
   total: number
   onExport?: (element: HTMLElement) => void
   onReset?: () => void
-  useMock?: boolean
   isShareSlide?: boolean
 }
 
@@ -36,7 +35,6 @@ export function WrappedSlide({
   total,
   onExport,
   onReset,
-  useMock,
   isShareSlide,
 }: WrappedSlideProps) {
   const slideRef = useRef<HTMLDivElement>(null)
@@ -116,12 +114,6 @@ export function WrappedSlide({
               </button>
             )}
           </div>
-
-          {useMock && (
-            <p className="mt-8 text-sm text-gray-500">
-              You&apos;re viewing demo data. Upload your real Hinge export for personalized insights!
-            </p>
-          )}
         </div>
       </motion.section>
     )

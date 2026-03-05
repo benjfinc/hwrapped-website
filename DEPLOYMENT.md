@@ -6,7 +6,7 @@
 
 2. Click **"Add New"** → **"Project"**.
 
-3. Import your GitHub repository (`HWrapped-Website` or wherever the code lives).
+3. Import your GitHub repository: `https://github.com/benjfinc/hwrapped-website`
 
 4. Vercel will auto-detect Next.js. Click **Deploy**.
 

@@ -39,7 +39,7 @@ export function HeatmapSlide({ data }: HeatmapSlideProps) {
                   key={date}
                   className="w-2 h-2 rounded-sm transition-colors"
                   style={{
-                    backgroundColor: `rgba(29, 185, 84, ${0.2 + (count / maxVal) * 0.8})`,
+                    backgroundColor: `rgba(153, 78, 168, ${0.2 + (count / maxVal) * 0.8})`,
                   }}
                   title={`${date}: ${count} messages`}
                 />

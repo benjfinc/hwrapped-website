@@ -8,7 +8,7 @@ interface PieChartSlideProps {
   colors?: string[]
 }
 
-const DEFAULT_COLORS = ['#1DB954', '#333', '#555', '#777']
+const DEFAULT_COLORS = ['#994EA8', '#B87AC4', '#555', '#777']
 
 export function PieChartSlide({ data, colors = DEFAULT_COLORS }: PieChartSlideProps) {
   if (!data || data.length === 0) return null

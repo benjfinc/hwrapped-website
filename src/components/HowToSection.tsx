@@ -49,7 +49,7 @@ export function HowToSection() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.4 }}
             >
-              <div className="w-12 h-12 rounded-full bg-hinge-green/20 flex items-center justify-center flex-shrink-0 font-bold text-hinge-green">
+              <div className="w-12 h-12 rounded-full bg-hinge-accent/20 flex items-center justify-center flex-shrink-0 font-bold text-hinge-accent">
                 {step.num}
               </div>
               <div>

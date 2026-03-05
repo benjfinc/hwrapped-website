@@ -70,7 +70,7 @@ export function UploadSection({ onFileUpload, onFilesUpload, onUseMock, loading,
           className={`
             relative border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer
             transition-all duration-200
-            ${loading ? 'border-gray-600 cursor-not-allowed opacity-70' : 'border-gray-600 hover:border-hinge-green/50 hover:bg-hinge-card/50'}
+            ${loading ? 'border-gray-600 cursor-not-allowed opacity-70' : 'border-gray-600 hover:border-hinge-accent/50 hover:bg-hinge-card/50'}
           `}
         >
           <input
@@ -84,14 +84,14 @@ export function UploadSection({ onFileUpload, onFilesUpload, onUseMock, loading,
 
           {loading ? (
             <div className="flex flex-col items-center gap-4">
-              <div className="w-12 h-12 border-2 border-hinge-green border-t-transparent rounded-full animate-spin" />
+              <div className="w-12 h-12 border-2 border-hinge-accent border-t-transparent rounded-full animate-spin" />
               <p className="text-gray-400">Processing your data...</p>
             </div>
           ) : (
             <>
-              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-hinge-green/20 flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-hinge-accent/20 flex items-center justify-center">
                 <svg
-                  className="w-8 h-8 text-hinge-green"
+                  className="w-8 h-8 text-hinge-accent"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

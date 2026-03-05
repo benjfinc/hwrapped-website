@@ -103,7 +103,7 @@ export function WrappedSlide({
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={() => slideRef.current && exportSlide(slideRef.current)}
-              className="px-8 py-4 bg-hinge-green hover:bg-hinge-green/90 text-black font-semibold rounded-full transition-all hover:scale-105"
+              className="px-8 py-4 bg-hinge-accent hover:bg-hinge-accent-light text-white font-semibold rounded-full transition-all hover:scale-105"
             >
               Export as image
             </button>
@@ -154,7 +154,7 @@ export function WrappedSlide({
 
         {slide.stat !== '' && (
           <motion.div
-            className="text-6xl md:text-8xl font-bold text-hinge-green mb-4"
+            className="text-6xl md:text-8xl font-bold text-hinge-accent mb-4"
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -181,7 +181,7 @@ export function WrappedSlide({
 
       {onExport && (
         <motion.button
-          className="absolute bottom-8 right-6 px-4 py-2 text-sm text-gray-400 hover:text-hinge-green transition-colors"
+          className="absolute bottom-8 right-6 px-4 py-2 text-sm text-gray-400 hover:text-hinge-accent transition-colors"
           onClick={() => slideRef.current && onExport(slideRef.current)}
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

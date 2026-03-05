@@ -8,7 +8,7 @@ interface BarChartSlideProps {
   color?: string
 }
 
-export function BarChartSlide({ data, color = '#1DB954' }: BarChartSlideProps) {
+export function BarChartSlide({ data, color = '#994EA8' }: BarChartSlideProps) {
   if (!data || data.length === 0) return null
 
   return (

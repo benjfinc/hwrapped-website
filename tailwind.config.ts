@@ -9,9 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'hinge-green': '#1DB954',
-        'hinge-dark': '#0a0a0a',
-        'hinge-card': '#121212',
+        'hinge-accent': '#994EA8',
+        'hinge-accent-light': '#B87AC4',
+        'hinge-dark': '#1A1A1A',
+        'hinge-card': '#242424',
+        'hinge-warm': '#E8A4B8',
       },
       fontFamily: {
         sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],

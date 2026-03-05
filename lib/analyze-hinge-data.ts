@@ -580,7 +580,7 @@ export function analyzeHingeData(
   if (messageDataUnreliable) {
     warnings.push("Conversation metrics set to null because required message fields were missing.");
   } else if (conversationCount > 0) {
-    const aggregate = [...conversationGroups.entries()].map(([conversationId, conversationMessages]) => {
+    const aggregate = Array.from(conversationGroups.entries()).map(([conversationId, conversationMessages]) => {
       const messageCount = conversationMessages.length;
       const firstTimestamp = conversationMessages[0].timestamp;
       const lastTimestamp = conversationMessages[conversationMessages.length - 1].timestamp;
@@ -702,7 +702,7 @@ export function analyzeHingeData(
       const ym = toYearMonth(match.timestamp);
       byMonth.set(ym, (byMonth.get(ym) ?? 0) + 1);
     });
-    matchesByMonth = [...byMonth.entries()]
+    matchesByMonth = Array.from(byMonth.entries())
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([ym, count]) => ({ ym, count }));
   }

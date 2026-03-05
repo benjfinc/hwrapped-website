@@ -14,6 +14,29 @@
 
 ---
 
+## Cloudflare deployment (OpenNext)
+
+This repository is configured for Cloudflare Workers via OpenNext:
+
+- `open-next.config.ts`
+- `wrangler.jsonc`
+
+Build and deploy with:
+
+```bash
+npm install
+npm run build:cf
+npm run deploy:cf
+```
+
+If deploying from Cloudflare Pages with a custom command, use:
+
+```bash
+npm run build:cf
+```
+
+---
+
 ## Step 2: Add Custom Domain (hingewrapped.com)
 
 **After you buy the domain:**

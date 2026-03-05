@@ -5,25 +5,37 @@ import { motion } from 'framer-motion'
 
 interface UploadSectionProps {
   onFileUpload: (file: File) => Promise<void>
+  onFilesUpload?: (files: File[]) => Promise<void>
   onUseMock: () => void
   loading: boolean
   error: string | null
 }
 
-export function UploadSection({ onFileUpload, onUseMock, loading, error }: UploadSectionProps) {
+export function UploadSection({ onFileUpload, onFilesUpload, onUseMock, loading, error }: UploadSectionProps) {
   const inputRef = useRef<HTMLInputElement>(null)
+
+  const processFiles = useCallback(
+    (files: FileList | File[]) => {
+      const arr = Array.from(files)
+      const valid = arr.filter((f) => f.name.toLowerCase().endsWith('.json') || f.name.toLowerCase().endsWith('.zip'))
+      if (valid.length === 0) return
+      if (valid.length === 1 && valid[0].name.toLowerCase().endsWith('.zip')) {
+        onFileUpload(valid[0])
+      } else if (valid.length > 1 && onFilesUpload) {
+        onFilesUpload(valid)
+      } else {
+        onFileUpload(valid[0])
+      }
+    },
+    [onFileUpload, onFilesUpload]
+  )
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault()
-      const file = e.dataTransfer.files[0]
-      if (file && (file.name.endsWith('.json') || file.name.endsWith('.zip'))) {
-        onFileUpload(file)
-      } else {
-        // Could set error here
-      }
+      if (e.dataTransfer.files.length) processFiles(e.dataTransfer.files)
     },
-    [onFileUpload]
+    [processFiles]
   )
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
@@ -33,11 +45,11 @@ export function UploadSection({ onFileUpload, onUseMock, loading, error }: Uploa
 
   const handleFileSelect = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0]
-      if (file) onFileUpload(file)
+      const files = e.target.files
+      if (files?.length) processFiles(files)
       e.target.value = ''
     },
-    [onFileUpload]
+    [processFiles]
   )
 
   const handleClick = () => inputRef.current?.click()
@@ -67,6 +79,7 @@ export function UploadSection({ onFileUpload, onUseMock, loading, error }: Uploa
             accept=".json,.zip"
             onChange={handleFileSelect}
             className="hidden"
+            multiple
           />
 
           {loading ? (
@@ -93,7 +106,7 @@ export function UploadSection({ onFileUpload, onUseMock, loading, error }: Uploa
               </div>
               <h3 className="text-xl font-semibold mb-2">Drop your Hinge data here</h3>
               <p className="text-gray-400 mb-4">
-                or click to browse • JSON or ZIP files from Hinge export
+                or click to browse • ZIP (full export) or multiple JSON files
               </p>
               <p className="text-sm text-gray-500">
                 Settings → Download My Data in the Hinge app

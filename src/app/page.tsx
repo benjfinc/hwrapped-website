@@ -7,7 +7,7 @@ import { UploadSection } from '@/components/UploadSection'
 import { HowToSection } from '@/components/HowToSection'
 import { PrivacyNote } from '@/components/PrivacyNote'
 import { WrappedSlides } from '@/components/WrappedSlides'
-import { parseHingeFile } from '@/lib/data-parser'
+import { parseHingeFile, mergeParsedData } from '@/lib/data-parser'
 import { computeStats } from '@/lib/compute-stats'
 import { generateSlides } from '@/lib/generate-slides'
 import type { ParsedHingeData, HingeStats, SlideData } from '@/lib/types'
@@ -42,6 +42,20 @@ export default function Home() {
     }
   }
 
+  const handleFilesUpload = async (files: File[]) => {
+    setLoading(true)
+    setError(null)
+    try {
+      const parsed = await Promise.all(files.map((f) => parseHingeFile(f)))
+      const merged = mergeParsedData(...parsed)
+      processData(merged)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to parse files')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleUseMock = () => {
     setUseMock(true)
     processData(MOCK_HINGE_DATA)
@@ -71,6 +85,7 @@ export default function Home() {
             <HeroSection />
             <UploadSection
               onFileUpload={handleFileUpload}
+              onFilesUpload={handleFilesUpload}
               onUseMock={handleUseMock}
               loading={loading}
               error={error}

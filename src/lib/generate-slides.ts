@@ -1,44 +1,76 @@
 /**
  * Generate wrapped-style slides from computed stats
+ * Uses correct Hinge export formulas
  */
 
 import type { HingeStats, SlideData } from './types';
 
 export function generateSlides(stats: HingeStats): SlideData[] {
+  const hasExtendedData = stats.profileName || stats.totalPhotos || stats.totalPrompts || stats.accountAgeDays;
+
   const slides: SlideData[] = [
     {
       id: 'intro',
       title: 'Your year on Hinge',
       stat: new Date().getFullYear(),
-      subtitle: 'Here\'s your dating wrapped',
+      subtitle: stats.profileName ? `Hey ${stats.profileName}! Here's your dating wrapped` : "Here's your dating wrapped",
+      chartType: 'none',
+    },
+    {
+      id: 'funnel',
+      title: 'Your relationship funnel',
+      stat: `${stats.totalMatches} matches`,
+      subtitle: `From ${stats.totalRecords} interactions • ${stats.totalConversations} became conversations`,
       chartType: 'none',
     },
     {
       id: 'matches',
       title: 'You got',
       stat: stats.totalMatches,
-      subtitle: 'matches this year',
+      subtitle: 'mutual matches',
       chartType: 'none',
     },
     {
-      id: 'messages-sent',
-      title: 'You sent',
-      stat: stats.totalMessagesSent.toLocaleString(),
-      subtitle: 'messages',
+      id: 'conversations',
+      title: 'Conversations started',
+      stat: stats.totalConversations,
+      subtitle: `${stats.conversationRate.toFixed(1)}% of matches led to chat`,
       chartType: 'none',
     },
     {
-      id: 'messages-received',
-      title: 'You received',
-      stat: stats.totalMessagesReceived.toLocaleString(),
-      subtitle: 'messages',
+      id: 'messages',
+      title: 'Messages in your conversations',
+      stat: stats.totalMessages.toLocaleString(),
+      subtitle: `~${stats.avgMessagesPerConversation.toFixed(1)} per conversation`,
       chartType: 'none',
     },
+    ...(hasExtendedData && stats.profileName
+      ? [
+          {
+            id: 'profile',
+            title: 'Your profile',
+            stat: `${stats.profileName}${stats.profileAge ? `, ${stats.profileAge}` : ''}`,
+            subtitle: stats.accountAgeDays ? `On Hinge for ${Math.round(stats.accountAgeDays / 30)} months` : undefined,
+            chartType: 'none' as const,
+          },
+        ]
+      : []),
+    ...(hasExtendedData && (stats.totalPhotos || stats.totalPrompts)
+      ? [
+          {
+            id: 'media',
+            title: 'Your Hinge presence',
+            stat: `${stats.totalPhotos || 0} photos`,
+            subtitle: stats.totalPrompts ? `${stats.totalPrompts} prompt answers` : undefined,
+            chartType: 'none' as const,
+          },
+        ]
+      : []),
     {
       id: 'active-day',
       title: 'Your most active day was',
       stat: stats.mostActiveDayOfWeek,
-      subtitle: 'That\'s when you were in your element',
+      subtitle: "That's when you were in your element",
       chartType: 'bar',
       chartData: Object.entries(stats.messagesByHour).map(([hour, count]) => ({
         name: `${hour}:00`,
@@ -57,23 +89,34 @@ export function generateSlides(stats: HingeStats): SlideData[] {
     },
     {
       id: 'longest-convo',
-      title: 'Your longest conversation lasted',
-      stat: `${stats.longestConversation.days} days`,
-      subtitle: stats.longestConversation.matchName ? `With ${stats.longestConversation.matchName}` : undefined,
+      title: 'Your longest conversation',
+      stat: `${stats.longestConversationMessages} messages`,
+      subtitle: `Spanning ${stats.longestConversation.days} days`,
       chartType: 'none',
     },
     {
-      id: 'longest-streak',
-      title: 'Longest messaging streak',
-      stat: `${stats.longestStreak} days`,
-      subtitle: 'You kept the conversation going',
+      id: 'match-streak',
+      title: 'Longest match streak',
+      stat: `${stats.longestMatchStreak} days`,
+      subtitle: 'Consecutive days with new matches',
       chartType: 'none',
     },
+    ...(stats.topEmojis?.length
+      ? [
+          {
+            id: 'emojis',
+            title: 'Your top emoji',
+            stat: stats.topEmojis[0]?.emoji || '😊',
+            subtitle: `Used ${stats.topEmojis[0]?.count} times • ${stats.questionRate.toFixed(1)}% of messages had a ?`,
+            chartType: 'none' as const,
+          },
+        ]
+      : []),
     {
-      id: 'rizz',
-      title: 'Your Rizz Score',
-      stat: stats.rizzScore,
-      subtitle: 'Based on your response rate and engagement',
+      id: 'content-stats',
+      title: 'Message analytics',
+      stat: `${stats.totalWords.toLocaleString()} words`,
+      subtitle: `~${stats.avgWordsPerMessage.toFixed(1)} per message • ${stats.totalCharacters.toLocaleString()} characters`,
       chartType: 'none',
     },
     {
@@ -85,27 +128,21 @@ export function generateSlides(stats: HingeStats): SlideData[] {
       chartData: stats.messagesByDay,
     },
     {
-      id: 'match-rate',
-      title: 'Match rate',
-      stat: `${stats.matchRate}%`,
-      subtitle: 'Of your likes became matches',
+      id: 'funnel-chart',
+      title: 'Interaction funnel',
+      stat: '',
+      subtitle: `Likes: ${stats.likesOnly} • Matches: ${stats.totalMatches} • Conversations: ${stats.totalConversations}`,
       chartType: 'pie',
       chartData: [
         { name: 'Matches', value: stats.totalMatches },
-        {
-          name: 'Likes',
-          value:
-            stats.matchRate > 0
-              ? Math.max(0, Math.round(stats.totalMatches / (stats.matchRate / 100)) - stats.totalMatches)
-              : 0,
-        },
+        { name: 'Likes only', value: stats.likesOnly },
       ],
     },
     {
       id: 'fun-stats',
       title: 'Quick stats',
       stat: '',
-      subtitle: `Fastest reply: ${stats.fastestReply} min • Ghosted: ${stats.ghostedConversations} • Top opener: "${stats.mostUsedOpener}"`,
+      subtitle: `Top opener: "${stats.mostUsedOpener}" • Most active month: ${stats.mostActiveMonth}`,
       chartType: 'none',
     },
     {

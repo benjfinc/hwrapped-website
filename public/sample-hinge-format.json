@@ -1,0 +1,21 @@
+{
+  "matches": [
+    {
+      "match_id": "example-1",
+      "name": "Alex",
+      "timestamp": "2024-01-15T20:30:00.000Z",
+      "messages": [
+        {
+          "timestamp": "2024-01-15T20:30:00.000Z",
+          "body": "Hey!",
+          "from": "you"
+        },
+        {
+          "timestamp": "2024-01-15T21:15:00.000Z",
+          "body": "Hi there!",
+          "from": "them"
+        }
+      ]
+    }
+  ]
+}

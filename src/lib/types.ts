@@ -109,6 +109,8 @@ export interface ParsedHingeData {
 export interface HingeStats {
   /** Total interaction records (likes + matches) */
   totalRecords: number;
+  /** Alias of totalRecords for clearer UI wording */
+  totalLikes: number;
   /** Mutual likes (match.length > 0) */
   totalMatches: number;
   /** Records with messages (chats.length > 0) */
@@ -119,8 +121,12 @@ export interface HingeStats {
   likesOnly: number;
   /** Messages in dataset (all from user - no sender IDs) */
   totalMessages: number;
+  /** Match rate from all likes/interactions */
+  matchRateFromLikes: number;
   /** Conversation rate: conversations / matches */
   conversationRate: number;
+  /** Conversation rate from likes/interactions */
+  conversationRateFromLikes: number;
   /** Avg messages per conversation */
   avgMessagesPerConversation: number;
   /** Median messages per conversation */
@@ -131,25 +137,14 @@ export interface HingeStats {
   mostActiveDayOfWeek: string;
   mostActiveTimeOfDay: string;
   matchesByMonth: Record<string, number>;
+  messagesByMonth: { month: string; count: number }[];
   /** Match streak: consecutive days with new matches */
   longestMatchStreak: number;
-  /** Message content analytics */
-  totalWords: number;
-  totalCharacters: number;
-  avgWordsPerMessage: number;
-  questionRate: number;
-  topEmojis: { emoji: string; count: number }[];
   mostUsedOpener: string;
   mostActiveMonth: string;
   messagesByDay: Record<string, number>;
   messagesByHour: Record<number, number>;
   /** Extended stats from full export */
-  profileName?: string;
-  profileAge?: number;
-  signupDate?: string;
-  totalPhotos?: number;
-  totalPrompts?: number;
-  topPrompt?: string;
   accountAgeDays?: number;
   /** Deprecated - no sender IDs in export */
   totalMessagesSent?: number;

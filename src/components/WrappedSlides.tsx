@@ -1,32 +1,76 @@
 'use client'
 
-import { useCallback } from 'react'
+import { useState, useRef } from 'react'
 import { WrappedSlide } from './WrappedSlide'
-import type { SlideData, HingeStats } from '@/lib/types'
-
-async function exportSlide(element: HTMLElement): Promise<void> {
-  const html2canvas = (await import('html2canvas')).default
-  const canvas = await html2canvas(element, {
-    backgroundColor: '#FAF9F8',
-    scale: 2,
-    useCORS: true,
-  })
-  const link = document.createElement('a')
-  link.download = `hinge-wrapped-${Date.now()}.png`
-  link.href = canvas.toDataURL('image/png')
-  link.click()
-}
+import type { SlideData } from '@/lib/types'
 
 interface WrappedSlidesProps {
   slides: SlideData[]
-  stats: HingeStats
   onReset: () => void
 }
 
-export function WrappedSlides({ slides, stats, onReset }: WrappedSlidesProps) {
-  const handleExport = useCallback(async (element: HTMLElement) => {
-    await exportSlide(element)
-  }, [])
+export function WrappedSlides({ slides, onReset }: WrappedSlidesProps) {
+  const slidesContainerRef = useRef<HTMLDivElement>(null)
+  const [isExporting, setIsExporting] = useState(false)
+
+  const captureAllSlides = async () => {
+    if (!slidesContainerRef.current) return null
+    const html2canvas = (await import('html2canvas')).default
+    return html2canvas(slidesContainerRef.current, {
+      backgroundColor: '#FAF9F8',
+      scale: 2,
+      useCORS: true,
+      windowWidth: slidesContainerRef.current.scrollWidth,
+      windowHeight: slidesContainerRef.current.scrollHeight,
+    })
+  }
+
+  const handleExportImage = async () => {
+    setIsExporting(true)
+    try {
+      const canvas = await captureAllSlides()
+      if (!canvas) return
+      const link = document.createElement('a')
+      link.download = `hinge-wrapped-full-${Date.now()}.png`
+      link.href = canvas.toDataURL('image/png')
+      link.click()
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
+  const handleExportPdf = async () => {
+    setIsExporting(true)
+    try {
+      const canvas = await captureAllSlides()
+      if (!canvas) return
+
+      const { jsPDF } = await import('jspdf')
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'px', format: 'a4' })
+      const pageWidth = pdf.internal.pageSize.getWidth()
+      const pageHeight = pdf.internal.pageSize.getHeight()
+      const imageData = canvas.toDataURL('image/png')
+
+      const renderedWidth = pageWidth
+      const renderedHeight = (canvas.height * renderedWidth) / canvas.width
+      let remainingHeight = renderedHeight
+      let yOffset = 0
+
+      pdf.addImage(imageData, 'PNG', 0, yOffset, renderedWidth, renderedHeight, undefined, 'FAST')
+      remainingHeight -= pageHeight
+
+      while (remainingHeight > 0) {
+        yOffset -= pageHeight
+        pdf.addPage()
+        pdf.addImage(imageData, 'PNG', 0, yOffset, renderedWidth, renderedHeight, undefined, 'FAST')
+        remainingHeight -= pageHeight
+      }
+
+      pdf.save(`hinge-wrapped-full-${Date.now()}.pdf`)
+    } finally {
+      setIsExporting(false)
+    }
+  }
 
   return (
     <div className="relative">
@@ -42,19 +86,48 @@ export function WrappedSlides({ slides, stats, onReset }: WrappedSlidesProps) {
       </header>
 
       {/* Slides */}
-      <div className="pt-16">
+      <div ref={slidesContainerRef} className="pt-16">
         {slides.map((slide, index) => (
           <WrappedSlide
             key={slide.id}
             slide={slide}
             index={index}
             total={slides.length}
-            onExport={handleExport}
-            onReset={onReset}
-            isShareSlide={slide.id === 'share'}
           />
         ))}
       </div>
+
+      <section className="px-6 py-12 border-t border-gray-200 bg-white">
+        <div className="max-w-3xl mx-auto text-center">
+          <h3 className="text-2xl font-bold mb-3">Export full Wrapped</h3>
+          <p className="text-gray-600 mb-6">
+            Save all stats shown above as one shareable file.
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button
+              onClick={handleExportImage}
+              disabled={isExporting}
+              className="px-6 py-3 bg-hinge-accent hover:bg-hinge-accent-light text-white font-semibold rounded-full transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isExporting ? 'Exporting...' : 'Export all as image'}
+            </button>
+            <button
+              onClick={handleExportPdf}
+              disabled={isExporting}
+              className="px-6 py-3 border border-gray-300 hover:border-gray-400 text-gray-700 font-medium rounded-full transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isExporting ? 'Exporting...' : 'Export all as PDF'}
+            </button>
+            <button
+              onClick={onReset}
+              disabled={isExporting}
+              className="px-6 py-3 text-gray-600 hover:text-gray-900 font-medium rounded-full transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              Try different data
+            </button>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }

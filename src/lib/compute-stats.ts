@@ -18,17 +18,6 @@ function getMessageDate(msg: { timestamp?: string; created_at?: string }): Date 
   return isNaN(d.getTime()) ? null : d;
 }
 
-/** Extract emoji from text - matches common emoji ranges */
-function extractEmojis(text: string): string[] {
-  const matches: string[] = [];
-  const regex = /[\uD800-\uDBFF][\uDC00-\uDFFF]|[\u2600-\u27BF]|[\u2300-\u23FF]|[\u2B50-\u2B55]|[\u203C-\u3299]/g;
-  let m;
-  while ((m = regex.exec(text)) !== null) {
-    matches.push(m[0]);
-  }
-  return matches;
-}
-
 export function computeStats(data: ParsedHingeData): HingeStats {
   const {
     interactionRecords = [],
@@ -47,13 +36,17 @@ export function computeStats(data: ParsedHingeData): HingeStats {
   });
 
   const totalRecords = records.length;
+  const likesFromFile = data.likes?.length ?? 0;
+  const totalLikes = Math.max(totalRecords, likesFromFile, allMatches.length);
   const totalMatches = allMatches.length;
   const totalConversations = convos.length;
   const matchesWithoutMessages = totalMatches - totalConversations;
-  const likesOnly = totalRecords - totalMatches;
+  const likesOnly = Math.max(0, totalLikes - totalMatches);
   const totalMessages = messages.length;
 
+  const matchRateFromLikes = totalLikes > 0 ? (totalMatches / totalLikes) * 100 : 0;
   const conversationRate = totalMatches > 0 ? (totalConversations / totalMatches) * 100 : 0;
+  const conversationRateFromLikes = totalLikes > 0 ? (totalConversations / totalLikes) * 100 : 0;
 
   const msgCounts = convos.map((c) => (c.messages || []).length).filter((n) => n > 0).sort((a, b) => a - b);
   const avgMessagesPerConversation = totalConversations > 0 ? totalMessages / totalConversations : 0;
@@ -141,8 +134,24 @@ export function computeStats(data: ParsedHingeData): HingeStats {
       monthCounts[m] = (monthCounts[m] || 0) + 1;
     }
   }
-  const mostActiveMonthNum = Object.entries(monthCounts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? new Date().getMonth();
-  const mostActiveMonth = MONTHS[parseInt(mostActiveMonthNum)] || MONTHS[new Date().getMonth()];
+  const monthWinner = Object.entries(monthCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
+  const mostActiveMonth =
+    monthWinner !== undefined ? MONTHS[parseInt(monthWinner)] || MONTHS[new Date().getMonth()] : 'No activity yet';
+
+  const messagesByMonthMap: Record<string, number> = {};
+  for (const msg of messages) {
+    const d = getMessageDate(msg);
+    if (!d) continue;
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    messagesByMonthMap[key] = (messagesByMonthMap[key] || 0) + 1;
+  }
+  const messagesByMonth = Object.entries(messagesByMonthMap)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([ym, count]) => {
+      const [year, month] = ym.split('-');
+      const monthLabel = MONTHS[Math.max(0, Number(month) - 1)] || month;
+      return { month: `${monthLabel.slice(0, 3)} ${year}`, count };
+    });
 
   const mostUsedOpener = (() => {
     const openers: Record<string, number> = {};
@@ -158,61 +167,26 @@ export function computeStats(data: ParsedHingeData): HingeStats {
     }
     return Object.entries(openers).sort((a, b) => b[1] - a[1])[0]?.[0]?.slice(0, 40) || 'Hey!';
   })();
-
-  const allBodies = messages.map((m) => m.body || '').join(' ');
-  const words = allBodies.split(/\s+/).filter((w) => w.length > 0);
-  const totalWords = words.length;
-  const totalCharacters = allBodies.length;
-  const avgWordsPerMessage = totalMessages > 0 ? totalWords / totalMessages : 0;
-  const questionRate = totalMessages > 0
-    ? (messages.filter((m) => (m.body || '').includes('?')).length / totalMessages) * 100
-    : 0;
-
-  const emojiCounts: Record<string, number> = {};
-  for (const msg of messages) {
-    const emojis = extractEmojis(msg.body || '');
-    for (const e of emojis) {
-      emojiCounts[e] = (emojiCounts[e] || 0) + 1;
-    }
-  }
-  const topEmojis = Object.entries(emojiCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 15)
-    .map(([emoji, count]) => ({ emoji, count }));
-
-  const user = data.user as { profile?: { first_name?: string; age?: number }; account?: { signup_time?: string } } | undefined;
-  const profile = user?.profile;
-  const account = user?.account;
-  const profileName = profile?.first_name;
-  const profileAge = profile?.age;
-  const signupTime = account?.signup_time;
-  const signupDate = signupTime
-    ? (() => {
-        const d = new Date(signupTime.replace(' ', 'T'));
-        return isNaN(d.getTime()) ? undefined : d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-      })()
-    : undefined;
-  const accountAgeDays = signupTime ? Math.floor((Date.now() - new Date(signupTime.replace(' ', 'T')).getTime()) / (1000 * 60 * 60 * 24)) : undefined;
-  const totalPhotos = data.media?.length ?? 0;
-  const totalPrompts = data.prompts?.length ?? 0;
-  const topPrompt = data.prompts?.length
-    ? (data.prompts as { prompt?: string; text?: string }[]).reduce(
-        (best, p) => {
-          const text = p.prompt || p.text || '';
-          return text.length > (best?.length || 0) ? text : best;
-        },
-        '' as string
-      )
-    : undefined;
+  const user = data.user as { account?: { signup_time?: string } } | undefined;
+  const signupTime = user?.account?.signup_time;
+  const accountAgeDays = (() => {
+    if (!signupTime) return undefined;
+    const parsed = new Date(signupTime.replace(' ', 'T'));
+    if (isNaN(parsed.getTime())) return undefined;
+    return Math.floor((Date.now() - parsed.getTime()) / (1000 * 60 * 60 * 24));
+  })();
 
   return {
     totalRecords,
+    totalLikes,
     totalMatches,
     totalConversations,
     matchesWithoutMessages,
     likesOnly,
     totalMessages,
+    matchRateFromLikes,
     conversationRate,
+    conversationRateFromLikes,
     avgMessagesPerConversation,
     medianMessagesPerConversation,
     longestConversationMessages,
@@ -220,22 +194,12 @@ export function computeStats(data: ParsedHingeData): HingeStats {
     mostActiveDayOfWeek,
     mostActiveTimeOfDay,
     matchesByMonth,
+    messagesByMonth,
     longestMatchStreak,
-    totalWords,
-    totalCharacters,
-    avgWordsPerMessage,
-    questionRate,
-    topEmojis,
     mostUsedOpener,
     mostActiveMonth,
     messagesByDay,
     messagesByHour,
-    profileName,
-    profileAge,
-    signupDate,
-    totalPhotos,
-    totalPrompts,
-    topPrompt: topPrompt?.slice(0, 50),
     accountAgeDays,
     totalMessagesSent: totalMessages,
     totalMessagesReceived: 0,

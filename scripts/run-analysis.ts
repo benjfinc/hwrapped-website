@@ -27,17 +27,20 @@ async function main() {
   console.log('=== ANALYSIS RESULTS ===\n');
   console.log(JSON.stringify(stats, null, 2));
   console.log('\n=== SUMMARY ===');
+  console.log('Total likes/interactions:', stats.totalLikes);
   console.log('Total matches:', stats.totalMatches);
-  console.log('Messages sent:', stats.totalMessagesSent);
-  console.log('Messages received:', stats.totalMessagesReceived);
+  console.log('Chats started:', stats.totalConversations);
+  console.log('Match rate from likes:', stats.matchRateFromLikes.toFixed(1) + '%');
+  console.log('Conversation rate from matches:', stats.conversationRate.toFixed(1) + '%');
+  console.log('Total messages:', stats.totalMessages);
   console.log('Longest conversation:', stats.longestConversation.days, 'days', stats.longestConversation.matchName ? `(with ${stats.longestConversation.matchName})` : '');
+  console.log('Most active month:', stats.mostActiveMonth);
   console.log('Most active day:', stats.mostActiveDayOfWeek);
   console.log('Most active hour:', stats.mostActiveTimeOfDay);
-  console.log('Rizz score:', stats.rizzScore);
   console.log('Most used opener:', stats.mostUsedOpener);
-  console.log('Ghosted:', stats.ghostedConversations);
-  console.log('Fastest reply:', stats.fastestReply, 'min');
-  console.log('Longest streak:', stats.longestStreak, 'days');
+  if (stats.accountAgeDays) {
+    console.log('Account age:', Math.round(stats.accountAgeDays / 30), 'months');
+  }
 }
 
 main().catch(console.error);

@@ -107,22 +107,20 @@ async function main() {
   console.log('');
 
   console.log('=== SUMMARY ===');
-  console.log('Total records:', stats.totalRecords);
+  console.log('Total likes/interactions:', stats.totalLikes);
   console.log('Matches:', stats.totalMatches);
   console.log('Conversations:', stats.totalConversations);
   console.log('Likes only:', stats.likesOnly);
   console.log('Matches without messages:', stats.matchesWithoutMessages);
   console.log('Total messages:', stats.totalMessages);
+  console.log('Match rate from likes:', stats.matchRateFromLikes.toFixed(1) + '%');
   console.log('Conversation rate:', stats.conversationRate.toFixed(1) + '%');
   console.log('Avg messages/convo:', stats.avgMessagesPerConversation.toFixed(1));
   console.log('Longest convo (msgs):', stats.longestConversationMessages);
   console.log('Longest match streak:', stats.longestMatchStreak);
-  if (stats.profileName) console.log('Profile:', stats.profileName, stats.profileAge ? `(${stats.profileAge})` : '');
-  if (stats.signupDate) console.log('Joined:', stats.signupDate);
   if (stats.accountAgeDays) console.log('Account age:', Math.round(stats.accountAgeDays / 30), 'months');
-  if (stats.totalPhotos) console.log('Photos:', stats.totalPhotos);
-  if (stats.totalPrompts) console.log('Prompts:', stats.totalPrompts);
   console.log('Most used opener:', stats.mostUsedOpener);
+  console.log('Most active month:', stats.mostActiveMonth);
   console.log('Most active day:', stats.mostActiveDayOfWeek);
   console.log('Most active hour:', stats.mostActiveTimeOfDay);
 }

@@ -93,7 +93,6 @@ export default function Home() {
           >
             <WrappedSlides
               slides={slides}
-              stats={stats!}
               onReset={handleReset}
             />
           </motion.div>

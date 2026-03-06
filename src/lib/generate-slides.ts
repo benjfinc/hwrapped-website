@@ -102,6 +102,18 @@ export function generateSlides(stats: HingeStats): SlideData[] {
           },
         ]
       : []),
+    ...(stats.topWords.length
+      ? [
+          {
+            id: 'top-words',
+            title: 'Most common words',
+            stat: stats.topWords[0].word,
+            subtitle: 'Non-filler words you used most',
+            chartType: 'bar' as const,
+            chartData: stats.topWords.slice(0, 6).map((item) => ({ name: item.word, value: item.count })),
+          },
+        ]
+      : []),
   ];
 
   return slides;

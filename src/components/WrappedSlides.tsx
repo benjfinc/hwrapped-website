@@ -211,6 +211,17 @@ export function WrappedSlides({ slides, stats, onReset }: WrappedSlidesProps) {
             )}
           </div>
 
+          <div className="mb-10">
+            <h2 className="text-3xl font-semibold mb-4">Most common meaningful words</h2>
+            {stats.topWords.length > 0 ? (
+              <p className="text-xl text-gray-800 leading-relaxed">
+                {stats.topWords.map((item) => `${item.word} (${item.count})`).join('  •  ')}
+              </p>
+            ) : (
+              <p className="text-gray-500">Not enough message text to compute top words.</p>
+            )}
+          </div>
+
           <div>
             <h2 className="text-3xl font-semibold mb-4">Monthly conversation activity</h2>
             <div className="space-y-2">

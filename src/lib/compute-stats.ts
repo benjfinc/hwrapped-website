@@ -10,6 +10,17 @@ import type { ParsedHingeData, HingeStats } from './types';
 
 const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const STOP_WORDS = new Set([
+  'the', 'and', 'for', 'you', 'your', 'with', 'that', 'this', 'have', 'has', 'are', 'was', 'were', 'been', 'but',
+  'not', 'its', 'it', 'just', 'really', 'very', 'from', 'about', 'what', 'when', 'where', 'which', 'while', 'would',
+  'could', 'should', 'there', 'their', 'they', 'them', 'then', 'than', 'into', 'onto', 'over', 'under', 'after',
+  'before', 'like', 'im', 'ive', 'youre', 'youve', 'dont', 'cant', 'wont', 'ill', 'id', 'lets', 'hey', 'lol', 'lmao',
+  'haha', 'omg', 'yes', 'yeah', 'yep', 'nah', 'okay', 'ok', 'also', 'too', 'our', 'ours', 'his', 'her', 'hers', 'she',
+  'him', 'who', 'how', 'why', 'can', 'will', 'did', 'does', 'doing', 'done', 'had', 'get', 'got', 'gotta', 'some',
+  'any', 'all', 'one', 'two', 'three', 'more', 'most', 'much', 'many', 'few', 'same', 'back', 'still', 'here', 'there',
+  'today', 'tonight', 'tomorrow', 'yesterday', 'now', 'later', 'sure', 'cool', 'nice', 'good', 'great', 'amazing',
+  'thanks', 'thank', 'thx', 'please', 'maybe', 'probably', 'definitely'
+]);
 
 function getMessageDate(msg: { timestamp?: string; created_at?: string }): Date | null {
   const ts = msg.timestamp || msg.created_at;
@@ -21,6 +32,12 @@ function getMessageDate(msg: { timestamp?: string; created_at?: string }): Date 
 function extractEmojis(text: string): string[] {
   const hits = text.match(/\p{Extended_Pictographic}/gu);
   return hits ?? [];
+}
+
+function extractMeaningfulWords(text: string): string[] {
+  const normalized = text.toLowerCase();
+  const tokens = normalized.match(/\p{L}[\p{L}'-]*/gu) ?? [];
+  return tokens.filter((token) => token.length > 2 && !STOP_WORDS.has(token));
 }
 
 export function computeStats(data: ParsedHingeData): HingeStats {
@@ -184,6 +201,17 @@ export function computeStats(data: ParsedHingeData): HingeStats {
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5)
     .map(([emoji, count]) => ({ emoji, count }));
+
+  const wordCounts: Record<string, number> = {};
+  for (const msg of messages) {
+    for (const word of extractMeaningfulWords(msg.body || '')) {
+      wordCounts[word] = (wordCounts[word] || 0) + 1;
+    }
+  }
+  const topWords = Object.entries(wordCounts)
+    .sort((a, b) => (b[1] !== a[1] ? b[1] - a[1] : a[0].localeCompare(b[0])))
+    .slice(0, 8)
+    .map(([word, count]) => ({ word, count }));
   const user = data.user as { account?: { signup_time?: string } } | undefined;
   const signupTime = user?.account?.signup_time;
   const accountAgeDays = (() => {
@@ -213,6 +241,7 @@ export function computeStats(data: ParsedHingeData): HingeStats {
     matchesByMonth,
     messagesByMonth,
     topEmojis,
+    topWords,
     longestMatchStreak,
     mostUsedOpener,
     mostActiveMonth,

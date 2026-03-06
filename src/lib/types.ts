@@ -139,6 +139,7 @@ export interface HingeStats {
   matchesByMonth: Record<string, number>;
   messagesByMonth: { month: string; count: number }[];
   topEmojis: { emoji: string; count: number }[];
+  topWords: { word: string; count: number }[];
   /** Match streak: consecutive days with new matches */
   longestMatchStreak: number;
   mostUsedOpener: string;

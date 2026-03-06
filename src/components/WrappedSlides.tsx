@@ -103,6 +103,21 @@ export function WrappedSlides({ slides, stats, onReset }: WrappedSlidesProps) {
     }
   }
 
+  const handleExportJson = async () => {
+    setIsExporting(true)
+    try {
+      const payload = {
+        generatedAt: new Date().toISOString(),
+        slides,
+        stats,
+      }
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' })
+      await downloadBlob(blob, `hinge-wrapped-full-${Date.now()}.json`)
+    } finally {
+      setIsExporting(false)
+    }
+  }
+
   return (
     <div className="relative">
       {/* Header */}
@@ -148,6 +163,13 @@ export function WrappedSlides({ slides, stats, onReset }: WrappedSlidesProps) {
               className="px-6 py-3 border border-gray-300 hover:border-gray-400 text-gray-700 font-medium rounded-full transition-all disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {isExporting ? 'Exporting...' : 'Export all as PDF'}
+            </button>
+            <button
+              onClick={handleExportJson}
+              disabled={isExporting}
+              className="px-6 py-3 border border-gray-300 hover:border-gray-400 text-gray-700 font-medium rounded-full transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+            >
+              {isExporting ? 'Exporting...' : 'Export raw JSON'}
             </button>
             <button
               onClick={onReset}
@@ -236,6 +258,27 @@ export function WrappedSlides({ slides, stats, onReset }: WrappedSlidesProps) {
                 </div>
               ))}
             </div>
+          </div>
+
+          <div className="mt-12">
+            <h2 className="text-3xl font-semibold mb-4">Slide recap (all shown stats)</h2>
+            <div className="space-y-3">
+              {slides.map((slide) => (
+                <div key={slide.id} className="rounded-xl border border-gray-200 p-4">
+                  <p className="text-sm text-gray-500">{slide.id}</p>
+                  <p className="text-xl font-semibold">{slide.title}</p>
+                  <p className="text-lg">{String(slide.stat)}</p>
+                  {slide.subtitle ? <p className="text-gray-600">{slide.subtitle}</p> : null}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-12">
+            <h2 className="text-3xl font-semibold mb-4">Complete metrics snapshot</h2>
+            <pre className="whitespace-pre-wrap break-words text-sm bg-gray-50 border border-gray-200 rounded-xl p-4">
+              {JSON.stringify(stats, null, 2)}
+            </pre>
           </div>
         </div>
       </div>

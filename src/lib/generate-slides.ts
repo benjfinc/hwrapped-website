@@ -77,18 +77,31 @@ export function generateSlides(stats: HingeStats): SlideData[] {
       id: 'opener',
       title: 'Top opener',
       stat: `"${stats.mostUsedOpener}"`,
-      subtitle: stats.accountAgeDays
-        ? `Account age: ${Math.round(stats.accountAgeDays / 30)} months on Hinge`
-        : 'Your most-used first line',
+      subtitle: 'Your most-used first line',
       chartType: 'none',
     },
-    {
-      id: 'closing',
-      title: 'All set',
-      stat: 'Hinge Wrapped',
-      subtitle: 'Use the export section below to save your full results as one image or PDF',
-      chartType: 'none',
-    },
+    ...(stats.accountAgeDays
+      ? [
+          {
+            id: 'account-age',
+            title: 'Account age',
+            stat: `${Math.round(stats.accountAgeDays / 30)} months`,
+            subtitle: 'How long your Hinge account has been active',
+            chartType: 'none' as const,
+          },
+        ]
+      : []),
+    ...(stats.topEmojis.length
+      ? [
+          {
+            id: 'emoji-top5',
+            title: 'Top 5 emojis',
+            stat: stats.topEmojis.map((item) => item.emoji).join('  '),
+            subtitle: stats.topEmojis.map((item) => `${item.emoji}×${item.count}`).join('   '),
+            chartType: 'none' as const,
+          },
+        ]
+      : []),
   ];
 
   return slides;

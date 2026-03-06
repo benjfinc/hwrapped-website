@@ -18,6 +18,11 @@ function getMessageDate(msg: { timestamp?: string; created_at?: string }): Date 
   return isNaN(d.getTime()) ? null : d;
 }
 
+function extractEmojis(text: string): string[] {
+  const hits = text.match(/\p{Extended_Pictographic}/gu);
+  return hits ?? [];
+}
+
 export function computeStats(data: ParsedHingeData): HingeStats {
   const {
     interactionRecords = [],
@@ -167,6 +172,18 @@ export function computeStats(data: ParsedHingeData): HingeStats {
     }
     return Object.entries(openers).sort((a, b) => b[1] - a[1])[0]?.[0]?.slice(0, 40) || 'Hey!';
   })();
+
+  const emojiCounts: Record<string, number> = {};
+  for (const msg of messages) {
+    const body = msg.body || '';
+    for (const emoji of extractEmojis(body)) {
+      emojiCounts[emoji] = (emojiCounts[emoji] || 0) + 1;
+    }
+  }
+  const topEmojis = Object.entries(emojiCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([emoji, count]) => ({ emoji, count }));
   const user = data.user as { account?: { signup_time?: string } } | undefined;
   const signupTime = user?.account?.signup_time;
   const accountAgeDays = (() => {
@@ -195,6 +212,7 @@ export function computeStats(data: ParsedHingeData): HingeStats {
     mostActiveTimeOfDay,
     matchesByMonth,
     messagesByMonth,
+    topEmojis,
     longestMatchStreak,
     mostUsedOpener,
     mostActiveMonth,

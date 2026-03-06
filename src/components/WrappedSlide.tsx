@@ -17,6 +17,8 @@ export function WrappedSlide({
   index,
   total,
 }: WrappedSlideProps) {
+  const isEmojiSlide = slide.id === 'emoji-top5'
+
   const renderChart = () => {
     if (slide.chartType === 'bar' && slide.chartData) {
       return <BarChartSlide data={slide.chartData as { name: string; value: number }[]} />
@@ -56,7 +58,8 @@ export function WrappedSlide({
 
         {slide.stat !== '' && (
           <motion.div
-            className="text-6xl md:text-8xl font-bold text-hinge-accent mb-4"
+            className={`font-bold text-hinge-accent mb-4 ${isEmojiSlide ? 'text-4xl md:text-6xl leading-relaxed' : 'text-6xl md:text-8xl'}`}
+            style={isEmojiSlide ? { fontFamily: '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif' } : undefined}
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
